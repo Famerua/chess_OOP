@@ -11,49 +11,60 @@ class GameBoard:
         self.board = [[" "] * 8 for _ in range(8)]
 
         # white
-        color = "white"
+        color = "БЕЛЫЕ"
         for y in range(8):
-            self.board[1][y] = Peshka((1, y), color)
-        self.board[0][0] = Ladiya((0, 0), color)
-        self.board[0][7] = Ladiya((0, 7), color)
-        self.board[0][1] = Kon((0, 1), color)
-        self.board[0][6] = Kon((0, 6), color)
-        self.board[0][2] = Slon((0, 2), color)
-        self.board[0][5] = Slon((0, 5), color)
-        self.board[0][3] = King((0, 3), color)
-        self.board[0][4] = Queen((0, 4), color)
+            self.board[1][y] = Peshka(1, y, color)
+        self.board[0][0] = Ladiya(0, 0, color)
+        self.board[0][7] = Ladiya(0, 7, color)
+        self.board[0][1] = Kon(0, 1, color)
+        self.board[0][6] = Kon(0, 6, color)
+        self.board[0][2] = Slon(0, 2, color)
+        self.board[0][5] = Slon(0, 5, color)
+        self.board[0][3] = King(0, 3, color)
+        self.board[0][4] = Queen(0, 4, color)
 
         # black
-        color = "black"
+        color = "ЧЕРНЫЕ"
         for y in range(8):
-            self.board[6][y] = Peshka((6, y), color)
-        self.board[7][0] = Ladiya((7, 0), color)
-        self.board[7][7] = Ladiya((7, 7), color)
-        self.board[7][1] = Kon((7, 1), color)
-        self.board[7][6] = Kon((7, 6), color)
-        self.board[7][2] = Slon((7, 2), color)
-        self.board[7][5] = Slon((7, 5), color)
-        self.board[7][3] = King((7, 3), color)
-        self.board[7][4] = Queen((7, 4), color)
-
-    def choose_step(self):
-        pass
+            self.board[6][y] = Peshka(6, y, color)
+        self.board[7][0] = Ladiya(7, 0, color)
+        self.board[7][7] = Ladiya(7, 7, color)
+        self.board[7][1] = Kon(7, 1, color)
+        self.board[7][6] = Kon(7, 6, color)
+        self.board[7][2] = Slon(7, 2, color)
+        self.board[7][5] = Slon(7, 5, color)
+        self.board[7][3] = King(7, 3, color)
+        self.board[7][4] = Queen(7, 4, color)
 
     def win(self):
-        pass
+        return False
+
+    def check_koordinates(self, x, y, step):
+        try:
+            if self.board[x][y] == " ":
+                return False
+            if self.board[x][y].color != step:
+                # print(self.board[koords[0]][koords[1]].color != step, self.board[koords[0]][koords[1]].color, step)
+                return False
+            return True
+        except:
+            return False
+
+    def move_to(self, x, y, x_new, y_new):
+        self.board[x_new][y_new], self.board[x][y] = self.board[x][y], " "
+        self.board[x_new][y_new].x = x_new
+        self.board[x_new][y_new].y = y_new
+
 
     def __str__(self):
         board_str = [None] * 17
         board_str[0] = "   a  b  c  d  e  f  g  h "
-        board_str[1] = "--------------------------"
+        board_str[1] = "  ------------------------"
         for i in range(2, 17):
             if i % 2 == 0:
+                # fmt: off
                 board_str[i] = "|".join(map(lambda x: str(x).ljust(2), [(i-2) // 2 + 1] + self.board[(i - 2) // 2]))
+                # fmt: on
             else:
-                board_str[i] = "--------------------------"
+                board_str[i] = "  ------------------------"
         return "\n".join(board_str)
-        # board_str.insert(0, [" ", "a", "b", "c", "d", "e", "f", "g", "h"])
-
-        # return "\n".join(
-        #     map(lambda x: " ".join(map(lambda y: str(y).ljust(2) + "|", x)), board_str)
-        # )

@@ -10,13 +10,14 @@ class Figure(ABC):
 
     # fmt: off
     @abstractmethod
-    def __init__(self, koords: Tuple[int, str], color: str,):
-        self.koords = koords
+    def __init__(self, x, y, color: str,):
+        self.x = x
+        self.y = y
         self.color = color
     # fmt: on
 
-    #@abstractmethod
-    def move(self, new_koords: Tuple[int, str]):
+    # @abstractmethod
+    def can_move_to(self, new_koords: Tuple[int, str]):
         pass
 
     # @abstractmethod
@@ -28,39 +29,70 @@ class Figure(ABC):
 
 
 class Peshka(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9823 if self.color == "white" else 9817)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9823 if self.color == "БЕЛЫЕ" else 9817)
 
-    # def __str__(self) -> str:
-    #     return self.symbol
+    def can_move_to(self, board):
+        # return True
+        step = 1 if self.color == "БЕЛЫЕ" else -1
+        moves = []
+
+        # на две вперед, если начальная позиция
+        start_y = (6, 1)[(step + 1) // 2]
+        if (
+            self.x == start_y
+            and board.board[self.x + 2 * step][self.y] == " "
+            and board.board[self.x + step][self.y] == " "
+        ):
+            moves.append((self.x + 2 * step, self.y))
+        # обычный ход вперед
+        # вот тут можно реализовать переход в ферзя
+        if board.board[self.x + step][self.y] == " ":
+            moves.append((self.x + step, self.y))
+        # перемещение во время поедания
+        if 0 <= self.y - 1 <= 7:
+            if (
+                hasattr(board.board[self.x + step][self.y - 1], "color")
+                and board.board[self.x + step][self.y - 1].color != self.color
+            ):
+                moves.append((self.x + step, self.y - 1))
+
+        if 0 <= self.y + 1 <= 7:
+            if (
+                hasattr(board.board[self.x + step][self.y + 1], "color")
+                and board.board[self.x + step][self.y + 1].color != self.color
+            ):
+                moves.append((self.x + step, self.y + 1))
+
+        return moves
 
 
 class Slon(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9821 if self.color == "white" else 9815)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9821 if self.color == "БЕЛЫЕ" else 9815)
 
 
 class Kon(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9822 if self.color == "white" else 9816)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9822 if self.color == "БЕЛЫЕ" else 9816)
 
 
 class Ladiya(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9820 if self.color == "white" else 9814)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9820 if self.color == "БЕЛЫЕ" else 9814)
 
 
 class Queen(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9819 if self.color == "white" else 9813)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9819 if self.color == "БЕЛЫЕ" else 9813)
 
 
 class King(Figure):
-    def __init__(self, koords: Tuple[int | str], color: str):
-        super().__init__(koords, color)
-        self.symbol = chr(9818 if self.color == "white" else 9812)
+    def __init__(self, x, y, color: str):
+        super().__init__(x, y, color)
+        self.symbol = chr(9818 if self.color == "БЕЛЫЕ" else 9812)
