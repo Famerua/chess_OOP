@@ -43,5 +43,17 @@ class GameBoard:
         pass
 
     def __str__(self):
+        board_str = [None] * 17
+        board_str[0] = "   a  b  c  d  e  f  g  h "
+        board_str[1] = "--------------------------"
+        for i in range(2, 17):
+            if i % 2 == 0:
+                board_str[i] = "|".join(map(lambda x: str(x).ljust(2), [(i-2) // 2 + 1] + self.board[(i - 2) // 2]))
+            else:
+                board_str[i] = "--------------------------"
+        return "\n".join(board_str)
+        # board_str.insert(0, [" ", "a", "b", "c", "d", "e", "f", "g", "h"])
 
-        return "\n".join(map(lambda x: " ".join(map(lambda y: str(y), x)), self.board))
+        # return "\n".join(
+        #     map(lambda x: " ".join(map(lambda y: str(y).ljust(2) + "|", x)), board_str)
+        # )
