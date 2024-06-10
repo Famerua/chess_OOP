@@ -17,7 +17,7 @@ class Figure(ABC):
     # fmt: on
 
     # @abstractmethod
-    def can_move_to(self, new_koords: Tuple[int, str]):
+    def can_move_to(self, board):
         pass
 
     # @abstractmethod
@@ -34,7 +34,6 @@ class Peshka(Figure):
         self.symbol = chr(9823 if self.color == "БЕЛЫЕ" else 9817)
 
     def can_move_to(self, board):
-        # return True
         step = 1 if self.color == "БЕЛЫЕ" else -1
         moves = []
 
@@ -65,7 +64,7 @@ class Peshka(Figure):
             ):
                 moves.append((self.x + step, self.y + 1))
         # перемещение на базу врага и получение ферзя
-        
+
         return moves
 
 
@@ -73,6 +72,83 @@ class Slon(Figure):
     def __init__(self, x, y, color: str):
         super().__init__(x, y, color)
         self.symbol = chr(9821 if self.color == "БЕЛЫЕ" else 9815)
+
+    def can_move_to(self, board):
+        moves = set()
+
+        dx = 1
+        dy = 1
+        while (
+            0 <= self.x + dx <= 7
+            and 0 <= self.y + dy <= 7
+            and isinstance(board.board[self.x + dx][self.y + dy], str)
+        ):
+            moves.add((self.x + dx, self.y + dy))
+            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+                dx += 1
+                dy += 1
+            else:
+                break
+        else:
+            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+                if board.board[self.x + dx][self.y + dy].color != self.color:
+                    moves.add((self.x + dx, self.y + dy))
+
+        dx = -1
+        dy = -1
+
+        while (
+            0 <= self.x + dx <= 7
+            and 0 <= self.y + dy <= 7
+            and isinstance(board.board[self.x + dx][self.y + dy], str)
+        ):
+            moves.add((self.x + dx, self.y + dy))
+            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+                dx += -1
+                dy += -1
+            else:
+                break
+        else:
+            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+                if board.board[self.x + dx][self.y + dy].color != self.color:
+                    moves.add((self.x + dx, self.y + dy))
+
+        dx = -1
+        dy = 1
+        while (
+            0 <= self.x + dx <= 7
+            and 0 <= self.y + dy <= 7
+            and isinstance(board.board[self.x + dx][self.y + dy], str)
+        ):
+            moves.add((self.x + dx, self.y + dy))
+            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+                dx += -1
+                dy += 1
+            else:
+                break
+        else:
+            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+                if board.board[self.x + dx][self.y + dy].color != self.color:
+                    moves.add((self.x + dx, self.y + dy))
+        dx = 1
+        dy = -1
+        while (
+            0 <= self.x + dx <= 7
+            and 0 <= self.y + dy <= 7
+            and isinstance(board.board[self.x + dx][self.y + dy], str)
+        ):
+            moves.add((self.x + dx, self.y + dy))
+            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+                dx += 1
+                dy += -1
+            else:
+                break
+        else:
+            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+                if board.board[self.x + dx][self.y + dy].color != self.color:
+                    moves.add((self.x + dx, self.y + dy))
+
+        return moves
 
 
 class Kon(Figure):
