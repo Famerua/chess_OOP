@@ -20,6 +20,7 @@ def main():
             )
             x, y = input("Введите координаты снова! Пример: 1a. --- ")
             x, y = int(x) - 1, ord(y) - 97
+        # Проверка наличие ходов у фигуры
         while not Board.board[x][y].can_move_to(Board):
             print("Неточные координаты! У фигуры нет свободных ходов.")
             x, y = input("Выберите другую фигуру!\n")
@@ -34,6 +35,7 @@ def main():
             x_new, y_new = int(x_new) - 1, ord(y_new) - 97
 
         Board.move_to(x, y, x_new, y_new)
+        
         print(Board)
 
 

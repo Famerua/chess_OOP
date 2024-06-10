@@ -64,7 +64,8 @@ class Peshka(Figure):
                 and board.board[self.x + step][self.y + 1].color != self.color
             ):
                 moves.append((self.x + step, self.y + 1))
-
+        # перемещение на базу врага и получение ферзя
+        
         return moves
 
 

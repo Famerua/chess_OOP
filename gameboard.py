@@ -54,7 +54,13 @@ class GameBoard:
         self.board[x_new][y_new], self.board[x][y] = self.board[x][y], " "
         self.board[x_new][y_new].x = x_new
         self.board[x_new][y_new].y = y_new
-
+        # проверка на переход пешки в ферзя
+        if isinstance(self.board[x_new][y_new], Peshka) and (
+            x_new == (7 if self.board[x_new][y_new].color == "БЕЛЫЕ" else 0)
+        ):
+            self.board[x_new][y_new] = Queen(
+                x_new, y_new, self.board[x_new][y_new].color
+            )
 
     def __str__(self):
         board_str = [None] * 17
