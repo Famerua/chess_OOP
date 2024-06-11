@@ -8,7 +8,7 @@ def main():
     print(Board)
 
     steps = cycle(("БЕЛЫЕ", "ЧЕРНЫЕ"))
-    while not Board.win():
+    while True:
         step = next(steps)
         x, y = input(
             f"Ходят {step}. Введите координаты фигуры, которой хотите пойти, через пробел.\n"
@@ -42,6 +42,10 @@ def main():
         Board.move_to(x, y, x_new, y_new)
 
         print(Board)
+
+        if Board.win(step):
+           break 
+
 
 
 if __name__ == "__main__":

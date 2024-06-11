@@ -16,8 +16,8 @@ class GameBoard:
         self.board[0][6] = Kon(0, 6, color)
         self.board[0][2] = Slon(0, 2, color)
         self.board[0][5] = Slon(0, 5, color)
-        self.board[0][3] = King(0, 3, color)
-        self.board[0][4] = Queen(0, 4, color)
+        self.board[0][4] = King(0, 4, color)
+        self.board[0][3] = Queen(0, 3, color)
 
         # black
         color = "ЧЕРНЫЕ"
@@ -29,11 +29,99 @@ class GameBoard:
         self.board[7][6] = Kon(7, 6, color)
         self.board[7][2] = Slon(7, 2, color)
         self.board[7][5] = Slon(7, 5, color)
-        self.board[7][3] = King(7, 3, color)
-        self.board[7][4] = Queen(7, 4, color)
+        self.board[7][4] = King(7, 4, color)
+        self.board[7][3] = Queen(7, 3, color)
 
-    def win(self):
-        return False
+    def win(self, step):
+        next_step = {"БЕЛЫЕ": "ЧЕРНЫЕ", "ЧЕРНЫЕ": "БЕЛЫЕ"}[step]
+        for i in range(8):
+            for j in range(8):
+                if (
+                    isinstance(self.board[i][j], King)
+                    and self.board[i][j].color == next_step
+                ):
+                    kx = i
+                    ky = j
+                    break
+
+        king: King = self.board[kx][ky]
+        alive_enemies = []
+        for i in range(8):
+            for j in range(8):
+                if (
+                    not isinstance(self.board[i][j], str)
+                    and self.board[i][j].color != king.color
+                ):
+                    alive_enemies.append(self.board[i][j])
+
+        banned_moves = set()
+        for enemy in alive_enemies:
+            banned_moves |= set(enemy.can_move_to(self))
+
+        if (kx, ky) in banned_moves:
+            if king.can_move_to(self).difference(banned_moves):
+                print(f"{step} СДЕЛАЛИ ШАХ!")
+                return False
+            else:
+                friends = []
+                for i in range(8):
+                    for j in range(8):
+                        if (
+                            not isinstance(self.board[i][j], str)
+                            and self.board[i][j].color == next_step
+                        ):
+                            friends.append(self.board[i][j])
+                possible_cells = []
+                for friend in friends:
+                    for move in friend.can_move_to(self):
+                        x_new, y_new = move[0], move[1]
+                        x, y = friend.x, friend.y
+                        temp = self.board[x_new][y_new]
+                        temp_x = x_new
+                        temp_y = y_new
+
+                        # fmt: off
+                        self.board[x_new][y_new], self.board[x][y] = friend, " "
+                        self.board[x_new][y_new].x = x_new
+                        self.board[x_new][y_new].y = y_new
+                        # fmt:on
+                        alive_enemies = []
+                        for i in range(8):
+                            for j in range(8):
+                                if (
+                                    not isinstance(self.board[i][j], str)
+                                    and self.board[i][j].color != king.color
+                                ):
+                                    alive_enemies.append(self.board[i][j])
+
+                        banned_moves = set()
+                        for enemy in alive_enemies:
+                            banned_moves |= set(enemy.can_move_to(self))
+
+                        if not (kx, ky) in banned_moves :
+                            possible_cells.append(True)
+                        else:
+                            possible_cells.append(False)
+
+                        self.board[x_new][y_new], self.board[x][y] = (
+                            temp,
+                            self.board[x_new][y_new],
+                        )
+
+                        self.board[x][y].x = x_new
+                        self.board[x][y].y = y_new
+
+                        if not isinstance(self.board[x_new][y_new], str):
+                            self.board[x_new][y_new].x = temp_x
+                            self.board[x_new][y_new].y = temp_y
+
+                if any(possible_cells):
+                    return False
+                else:
+                    print(f"{step} ПОСТАВИЛИ МАТ!!!")
+                    return True
+
+        # return False
 
     def check_koordinates(self, x, y, step):
         try:
@@ -65,32 +153,32 @@ class GameBoard:
             alive_enemies = []
             for i in range(8):
                 for j in range(8):
-                    if not isinstance(self.board[i][j], str) and self.board[i][j].color != king.color:
+                    if (
+                        not isinstance(self.board[i][j], str)
+                        and self.board[i][j].color != king.color
+                    ):
                         alive_enemies.append(self.board[i][j])
-            
+
             banned_moves = set()
             for enemy in alive_enemies:
-                banned_moves |= set(enemy.can_move_to(self))    
-            
+                banned_moves |= set(enemy.can_move_to(self))
+
             if (x_new, y_new) in banned_moves:
-                print('КОРОЛЮ НЕЛЬЗЯ ХОДИТЬ НА АТАКОВАННЫЕ ПОЛЯ!!!')
-                self.board[x][y], self.board[x_new][y_new] = self.board[x_new][y_new], " "
+                print("КОРОЛЮ НЕЛЬЗЯ ХОДИТЬ НА АТАКОВАННЫЕ ПОЛЯ!!!")
+                self.board[x][y], self.board[x_new][y_new] = (
+                    self.board[x_new][y_new],
+                    " ",
+                )
                 self.board[x][y].x = x
                 self.board[x][y].y = y
 
                 while (x_new, y_new) in banned_moves:
-                    x_new, y_new = input('Выберите другое место для короля! : ')
+                    x_new, y_new = input("Выберите другое место для короля! : ")
                     x_new, y_new = int(x_new) - 1, ord(y_new) - 97
-                
+
                 self.board[x_new][y_new], self.board[x][y] = self.board[x][y], " "
                 self.board[x_new][y_new].x = x_new
                 self.board[x_new][y_new].y = y_new
-            
-
-
-
-
-
 
     def __str__(self):
         board_str = [None] * 17
