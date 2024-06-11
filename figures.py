@@ -17,8 +17,27 @@ class Figure(ABC):
     # fmt: on
 
     # @abstractmethod
-    def can_move_to(self, board):
-        pass
+    def can_move_to(self, board, dX, dY):
+        moves = set()
+
+        dx = dX
+        dy = dY
+        while (
+            0 <= self.x + dx <= 7
+            and 0 <= self.y + dy <= 7
+            and isinstance(board.board[self.x + dx][self.y + dy], str)
+        ):
+            moves.add((self.x + dx, self.y + dy))
+            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+                dx += dX
+                dy += dY
+            else:
+                break
+        else:
+            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+                if board.board[self.x + dx][self.y + dy].color != self.color:
+                    moves.add((self.x + dx, self.y + dy))
+        return moves
 
     # @abstractmethod
     def eat(self):
@@ -26,7 +45,6 @@ class Figure(ABC):
 
     def __str__(self) -> str:
         return self.symbol
-        
 
 
 class Peshka(Figure):
@@ -75,81 +93,89 @@ class Slon(Figure):
         self.symbol = chr(9821 if self.color == "БЕЛЫЕ" else 9815)
 
     def can_move_to(self, board):
-        moves = set()
-
-        dx = 1
-        dy = 1
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += 1
-                dy += 1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-
-        dx = -1
-        dy = -1
-
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += -1
-                dy += -1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-
-        dx = -1
-        dy = 1
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += -1
-                dy += 1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-        dx = 1
-        dy = -1
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += 1
-                dy += -1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-
+        moves = (
+            super().can_move_to(board, 1, 1)
+            | super().can_move_to(board, -1, -1)
+            | super().can_move_to(board, -1, 1)
+            | super().can_move_to(board, 1, -1)
+        )
         return moves
+
+        # moves = set()
+
+        # dx = 1
+        # dy = 1
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += 1
+        #         dy += 1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # dx = -1
+        # dy = -1
+
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += -1
+        #         dy += -1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # dx = -1
+        # dy = 1
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += -1
+        #         dy += 1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+        # dx = 1
+        # dy = -1
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += 1
+        #         dy += -1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # return moves
 
 
 class Kon(Figure):
@@ -164,81 +190,89 @@ class Ladiya(Figure):
         self.symbol = chr(9820 if self.color == "БЕЛЫЕ" else 9814)
 
     def can_move_to(self, board):
-        moves = set()
-
-        dx = 1
-        dy = 0
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += 1
-                dy += 0
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-
-        dx = -1
-        dy = 0
-
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += -1
-                dy += 0
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-
-        dx = 0
-        dy = 1
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += 0
-                dy += 1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
-        dx = 0
-        dy = -1
-        while (
-            0 <= self.x + dx <= 7
-            and 0 <= self.y + dy <= 7
-            and isinstance(board.board[self.x + dx][self.y + dy], str)
-        ):
-            moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
-                dx += 0
-                dy += -1
-            else:
-                break
-        else:
-            if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
-                if board.board[self.x + dx][self.y + dy].color != self.color:
-                    moves.add((self.x + dx, self.y + dy))
+        moves = (
+            super().can_move_to(board, 1, 0)
+            | super().can_move_to(board, -1, 0)
+            | super().can_move_to(board, 0, 1)
+            | super().can_move_to(board, 0, -1)
+        )
 
         return moves
+        # moves = set()
+
+        # dx = 1
+        # dy = 0
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += 1
+        #         dy += 0
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # dx = -1
+        # dy = 0
+
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += -1
+        #         dy += 0
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # dx = 0
+        # dy = 1
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += 0
+        #         dy += 1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+        # dx = 0
+        # dy = -1
+        # while (
+        #     0 <= self.x + dx <= 7
+        #     and 0 <= self.y + dy <= 7
+        #     and isinstance(board.board[self.x + dx][self.y + dy], str)
+        # ):
+        #     moves.add((self.x + dx, self.y + dy))
+        #     if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+        #         dx += 0
+        #         dy += -1
+        #     else:
+        #         break
+        # else:
+        #     if 0 <= self.x + dx <= 7 and 0 <= self.y + dy <= 7:
+        #         if board.board[self.x + dx][self.y + dy].color != self.color:
+        #             moves.add((self.x + dx, self.y + dy))
+
+        # return moves
 
 
 class Queen(Figure):
