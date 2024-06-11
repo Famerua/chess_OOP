@@ -165,5 +165,20 @@ class King(Figure):
         super().__init__(x, y, color)
         self.symbol = chr(9818 if self.color == "БЕЛЫЕ" else 9812)
 
-    def can_move_to(self, board, dX, dY):
-        return super().can_move_to(board, dX, dY)
+    def can_move_to(self, board):
+        temp = set()
+
+        for i in range(8):
+            for j in range(8):
+                if (self.x - i) ** 2 + (self.y - j) ** 2 in {1, 2}:
+                    temp.add((i, j))
+
+        moves = set()
+        for move in temp:
+            cell = board.board[move[0]][move[1]]
+            if isinstance(cell, str) or (
+                not isinstance(cell, str) and cell.color != self.color
+            ):
+                moves.add(move)
+
+        return moves
