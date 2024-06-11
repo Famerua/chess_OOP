@@ -16,7 +16,7 @@ class Figure(ABC):
         self.color = color
     # fmt: on
 
-    # @abstractmethod
+    @abstractmethod
     def can_move_to(self, board, dX, dY):
         moves = set()
 
@@ -107,6 +107,24 @@ class Kon(Figure):
         super().__init__(x, y, color)
         self.symbol = chr(9822 if self.color == "БЕЛЫЕ" else 9816)
 
+    def can_move_to(self, board):
+        temp = set()
+        for i in range(8):
+            for j in range(8):
+                if (self.x - i) ** 2 + (self.y - j) ** 2 == 5:
+                    temp.add((i, j))
+
+        # moves = set(filter(lambda x: not isinstance(board.board[x[0]][x[1]], str) and board.board[x[0]][x[1]].color != self.color, moves))
+        moves = set()
+        for move in temp:
+            cell = board.board[move[0]][move[1]]
+            if isinstance(cell, str) or (
+                not isinstance(cell, str) and cell.color != self.color
+            ):
+                moves.add(move)
+
+        return moves
+
 
 class Ladiya(Figure):
     def __init__(self, x, y, color: str):
@@ -146,3 +164,6 @@ class King(Figure):
     def __init__(self, x, y, color: str):
         super().__init__(x, y, color)
         self.symbol = chr(9818 if self.color == "БЕЛЫЕ" else 9812)
+
+    def can_move_to(self, board, dX, dY):
+        return super().can_move_to(board, dX, dY)
