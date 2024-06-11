@@ -3,7 +3,8 @@ from itertools import cycle
 
 
 def main():
-    Board = gameboard.GameBoard()
+    povorot_doski = input('Перевернуть доску? Y/n: ').lower() == 'y'
+    Board = gameboard.GameBoard(povorot_doski)
     print(Board)
 
     steps = cycle(("БЕЛЫЕ", "ЧЕРНЫЕ"))

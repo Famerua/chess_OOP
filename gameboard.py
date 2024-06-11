@@ -1,13 +1,9 @@
 from figures import *
 
 
-class Cell:
-    def __init__():
-        pass
-
-
 class GameBoard:
-    def __init__(self):
+    def __init__(self, povorot_doski: bool = False):
+        self.povorot_doski = povorot_doski
         self.board = [[" "] * 8 for _ in range(8)]
 
         # white
@@ -54,6 +50,7 @@ class GameBoard:
         self.board[x_new][y_new], self.board[x][y] = self.board[x][y], " "
         self.board[x_new][y_new].x = x_new
         self.board[x_new][y_new].y = y_new
+
         # проверка на переход пешки в ферзя
         if isinstance(self.board[x_new][y_new], Peshka) and (
             x_new == (7 if self.board[x_new][y_new].color == "БЕЛЫЕ" else 0)
@@ -61,6 +58,39 @@ class GameBoard:
             self.board[x_new][y_new] = Queen(
                 x_new, y_new, self.board[x_new][y_new].color
             )
+
+        # проверка того, что король ходит правильно
+        if isinstance(self.board[x_new][y_new], King):
+            king = self.board[x_new][y_new]
+            alive_enemies = []
+            for i in range(8):
+                for j in range(8):
+                    if not isinstance(self.board[i][j], str) and self.board[i][j].color != king.color:
+                        alive_enemies.append(self.board[i][j])
+            
+            banned_moves = set()
+            for enemy in alive_enemies:
+                banned_moves |= set(enemy.can_move_to(self))    
+            
+            if (x_new, y_new) in banned_moves:
+                print('КОРОЛЮ НЕЛЬЗЯ ХОДИТЬ НА АТАКОВАННЫЕ ПОЛЯ!!!')
+                self.board[x][y], self.board[x_new][y_new] = self.board[x_new][y_new], " "
+                self.board[x][y].x = x
+                self.board[x][y].y = y
+
+                while (x_new, y_new) in banned_moves:
+                    x_new, y_new = input('Выберите другое место для короля! : ')
+                    x_new, y_new = int(x_new) - 1, ord(y_new) - 97
+                
+                self.board[x_new][y_new], self.board[x][y] = self.board[x][y], " "
+                self.board[x_new][y_new].x = x_new
+                self.board[x_new][y_new].y = y_new
+            
+
+
+
+
+
 
     def __str__(self):
         board_str = [None] * 17
@@ -73,4 +103,4 @@ class GameBoard:
                 # fmt: on
             else:
                 board_str[i] = "  ------------------------"
-        return "\n".join(board_str)
+        return "\n".join(board_str if self.povorot_doski else reversed(board_str))

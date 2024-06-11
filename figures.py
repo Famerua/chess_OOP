@@ -4,10 +4,6 @@ from typing import Tuple
 
 class Figure(ABC):
 
-    # @abstractmethod
-    def check_step():
-        pass
-
     # fmt: off
     @abstractmethod
     def __init__(self, x, y, color: str,):
@@ -38,10 +34,6 @@ class Figure(ABC):
                 if board.board[self.x + dx][self.y + dy].color != self.color:
                     moves.add((self.x + dx, self.y + dy))
         return moves
-
-    # @abstractmethod
-    def eat(self):
-        pass
 
     def __str__(self) -> str:
         return self.symbol
