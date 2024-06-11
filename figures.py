@@ -28,7 +28,7 @@ class Figure(ABC):
             and isinstance(board.board[self.x + dx][self.y + dy], str)
         ):
             moves.add((self.x + dx, self.y + dy))
-            if 0 <= self.x + dx + 1 <= 7 and 0 <= self.y + dy + 1 <= 7:
+            if 0 <= self.x + dx + dX <= 7 and 0 <= self.y + dy + dY <= 7:
                 dx += dX
                 dy += dY
             else:
